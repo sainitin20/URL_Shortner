@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>On-Chain URL Shortener</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+  <!-- Ethers v6 (from CDN) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.2/ethers.umd.min.js"
+          integrity=""
+          crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="logo-area">
+        <h1>URL Chain</h1>
+        <p>Decentralized • Expiring • Verifiable</p>
+      </div>
+      <div class="wallet-area">
+        <button id="connectBtn" class="btn-primary">Connect Wallet</button>
+        <div id="walletStatus" class="wallet-status">Not Connected</div>
+      </div>
+    </header>
+
+    <nav class="nav">
+      <button class="nav-btn active" data-section="create">Create Short URL</button>
+      <button class="nav-btn" data-section="resolve">Resolve URL</button>
+      <button class="nav-btn" data-section="manage">Manage URLs</button>
+      <button class="nav-btn" data-section="info">Info</button>
+    </nav>
+
+    <main>
+      <!-- CREATE SECTION -->
+      <section id="section-create" class="section visible">
+        <h2>Create Short URL</h2>
+        <p class="section-subtitle">
+          Pay a small on-chain fee and generate a secure, time-limited short URL.
+        </p>
+
+        <div class="card">
+          <label for="originalUrl">Original URL</label>
+          <input type="text" id="originalUrl" placeholder="https://example.com/very/long/link" />
+
+          <label for="durationSelect">Select Duration</label>
+          <select id="durationSelect">
+            <option value="1">30 days (Tier 1)</option>
+            <option value="2">60 days (Tier 2)</option>
+          </select>
+
+          <button id="createBtn" class="btn-primary">Create Short URL</button>
+
+          <div id="createStatus" class="status"></div>
+
+          <div id="createdResult" class="result hidden">
+            <h3>Your Short URL</h3>
+            <p><strong>Short Code:</strong> <span id="shortCodeText"></span></p>
+            <p><strong>Shareable Link:</strong> <span id="shareLinkText"></span></p>
+            <p><strong>Expires At:</strong> <span id="shortExpiryText"></span></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- RESOLVE SECTION -->
+      <section id="section-resolve" class="section">
+        <h2>Resolve Short URL</h2>
+        <p class="section-subtitle">
+          Anyone can resolve short URLs for free. Just paste the short code.
+        </p>
+
+        <div class="card">
+          <label for="resolveCode">Short Code (hex or text)</label>
+          <input type="text" id="resolveCode" placeholder="0xabc... or some-identifier" />
+
+          <button id="resolveBtn" class="btn-primary">Resolve</button>
+
+          <div id="resolveStatus" class="status"></div>
+
+          <div id="resolveResult" class="result hidden">
+            <p><strong>Original URL:</strong> <a id="resolvedUrl" href="#" target="_blank"></a></p>
+            <p><strong>Active:</strong> <span id="resolvedActive"></span></p>
+            <button id="visitBtn" class="btn-secondary">Open in New Tab</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- MANAGE SECTION -->
+      <section id="section-manage" class="section">
+        <h2>Manage Your URL</h2>
+        <p class="section-subtitle">
+          Verify ownership, renew expiration, or delete your short URL.
+        </p>
+
+        <div class="card">
+          <label for="manageCode">Short Code</label>
+          <input type="text" id="manageCode" placeholder="Short code you own" />
+
+          <button id="checkOwnerBtn" class="btn-secondary">Check Ownership</button>
+          <div id="manageStatus" class="status"></div>
+
+          <div class="manage-actions">
+            <div>
+              <h3>Renew</h3>
+              <label for="renewDurationSelect">Duration</label>
+              <select id="renewDurationSelect">
+                <option value="1">30 days</option>
+                <option value="2">60 days</option>
+              </select>
+              <button id="renewBtn" class="btn-primary small">Renew URL</button>
+            </div>
+            <div>
+              <h3>Delete</h3>
+              <button id="deleteBtn" class="btn-danger small">Delete URL</button>
+            </div>
+          </div>
+
+          <div id="manageInfo" class="result hidden">
+            <p><strong>Owner:</strong> <span id="manageOwner"></span></p>
+            <p><strong>Expires At:</strong> <span id="manageExpiry"></span></p>
+            <p><strong>Active:</strong> <span id="manageActive"></span></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- INFO SECTION -->
+      <section id="section-info" class="section">
+        <h2>How It Works</h2>
+        <div class="card">
+          <ul class="info-list">
+            <li><strong>Low Gas:</strong> Contract stores minimal data, uses fixed-size keys, and events for off-chain indexing.</li>
+            <li><strong>Fee + Duration:</strong> You pay a small fee in Sepolia ETH for 30 or 60 days of validity.</li>
+            <li><strong>Ownership:</strong> Each short URL is owned by the creator’s address. Only the owner can renew/delete.</li>
+            <li><strong>Decentralized Expiration:</strong> Expiration and active status are enforced directly on-chain.</li>
+            <li><strong>Public Access:</strong> Anyone can read/resolve URLs for free — perfect for sharing.</li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>Built on Ethereum Sepolia • Testnet only • Use with MetaMask</p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
